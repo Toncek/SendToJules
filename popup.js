@@ -23,8 +23,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Initialize
   appSettings = await getSettings();
+
   if (!appSettings.julesApiKey) {
-    showToast('Chýba API kľúč. Otvorte nastavenia.', true);
+    document.getElementById('main-ui').classList.add('hidden');
+    document.getElementById('onboarding-state').classList.remove('hidden');
+    document.getElementById('btnOpenOptions').addEventListener('click', () => {
+      chrome.runtime.openOptionsPage();
+    });
+    return;
   }
 
   await loadSources();
@@ -58,14 +64,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const found = allSources.find(s => s.id === repo || s.name === repo);
         if (found) repo = found.name;
       }
-      if (!repo || !repo.startsWith('sources/')) throw new Error('Neplatný repozitár');
+      if (!repo || !repo.startsWith('sources/')) throw new Error('Invalid repository');
 
       let finalPrompt = promptText.value.trim();
-      if (!finalPrompt) throw new Error('Zadanie je prázdne');
+      if (!finalPrompt) throw new Error('Prompt is empty');
 
       const chkAppendUrl = document.getElementById('chkAppendUrl').checked;
       if (chkAppendUrl && pendingTask && pendingTask.pageUrl) {
-        finalPrompt += `\n\nZdrojová URL: ${pendingTask.pageUrl}`;
+        finalPrompt += `\n\nSource URL: ${pendingTask.pageUrl}`;
       }
 
       const titleMatch = finalPrompt.split('\n')[0];
@@ -73,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const payload = {
         prompt: finalPrompt,
-        title: title || 'Úloha z rozšírenia',
+        title: title || 'Task from extension',
         source: repo,
         branch: document.getElementById('inputBranch').value.trim() || appSettings.defaultBranch,
         requirePlanApproval: document.getElementById('chkRequireApproval').checked,
@@ -93,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       pendingTask = null;
       promptText.value = '';
 
-      showToast('Úloha vytvorená!', false);
+      showToast('Task created!', false);
 
       // Switch to sessions tab
       document.querySelector('[data-target="tab-sessions"]').click();
@@ -222,7 +228,11 @@ async function renderSessionsList(forceFetch = false) {
 
   container.innerHTML = '';
   if (sessions.length === 0) {
-    container.innerHTML = '<div class="text-center" style="color: var(--text-muted);">Žiadne aktívne sessions.</div>';
+    const emptyDiv = document.createElement('div');
+    emptyDiv.className = 'text-center';
+    emptyDiv.style.color = 'var(--text-muted)';
+    emptyDiv.textContent = 'No active sessions.';
+    container.appendChild(emptyDiv);
     return;
   }
 
@@ -245,7 +255,7 @@ async function renderSessionsList(forceFetch = false) {
     header.className = 'session-header';
     const title = document.createElement('h3');
     title.className = 'session-title';
-    title.textContent = s.title || 'Bez názvu';
+    title.textContent = s.title || 'Untitled';
     const badge = document.createElement('span');
     badge.className = `badge ${badgeClass}`;
     badge.textContent = stateTxt;
@@ -262,7 +272,7 @@ async function renderSessionsList(forceFetch = false) {
       const btn = document.createElement('button');
       btn.className = 'btn btn-primary btn-approve';
       btn.dataset.name = s.name;
-      btn.textContent = '✅ Schváliť plán';
+      btn.textContent = '✅ Approve Plan';
       actions.appendChild(btn);
     }
     if (s.url) {
@@ -270,7 +280,7 @@ async function renderSessionsList(forceFetch = false) {
       link.href = s.url;
       link.target = '_blank';
       link.className = 'btn';
-      link.textContent = 'Otvoriť ↗';
+      link.textContent = 'Open ↗';
       actions.appendChild(link);
     }
 
@@ -286,15 +296,15 @@ async function renderSessionsList(forceFetch = false) {
     btn.addEventListener('click', async (e) => {
       const name = e.target.dataset.name;
       e.target.disabled = true;
-      e.target.textContent = 'Schvaľujem...';
+      e.target.textContent = 'Approving...';
       try {
         await approvePlan(appSettings.julesApiKey, name);
-        showToast('Plán schválený!', false);
+        showToast('Plan approved!', false);
         setTimeout(() => renderSessionsList(true), 1500);
       } catch (err) {
         showToast(err.message, true);
         e.target.disabled = false;
-        e.target.textContent = '✅ Schváliť plán';
+        e.target.textContent = '✅ Approve Plan';
       }
     });
   });

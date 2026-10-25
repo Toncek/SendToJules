@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const btnDel = document.createElement('button');
       btnDel.className = 'btn';
-      btnDel.textContent = 'Odstrániť';
+      btnDel.textContent = 'Remove';
       btnDel.onclick = () => {
         customPresets.splice(index, 1);
         renderPresets();
@@ -90,29 +90,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     await saveSettings(newSettings);
-    showToast('Nastavenia boli úspešne uložené.', false);
+    showToast('Settings saved successfully.', false);
   });
 
   // Test Connection
   elements.testBtn.addEventListener('click', async () => {
     const apiKey = elements.apiKey.value.trim();
     if (!apiKey) {
-      showToast('Zadajte API kľúč pred testovaním.', true);
+      showToast('Please enter an API key before testing.', true);
       return;
     }
 
     elements.testBtn.disabled = true;
-    elements.testBtn.textContent = 'Načítavam repozitáre...';
+    elements.testBtn.textContent = 'Loading repositories...';
 
     try {
       const sources = await fetchSources(apiKey);
       await saveSettings({ ...settings, julesApiKey: apiKey });
-      showToast(`Pripojenie úspešné. Nájdených repozitárov: ${sources.length}`, false);
+      showToast(`Connection successful. Repositories found: ${sources.length}`, false);
     } catch (error) {
       showToast(error.message, true);
     } finally {
       elements.testBtn.disabled = false;
-      elements.testBtn.textContent = 'Otestovať pripojenie a synchronizovať repozitáre';
+      elements.testBtn.textContent = 'Test Connection & Sync Repositories';
     }
   });
 

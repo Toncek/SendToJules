@@ -5,10 +5,10 @@ export const DEFAULT_SETTINGS = {
   autoCreatePr: false,
   enableNotifications: true,
   customPresets: [
-    "🛠️ Oprav bug / stack trace",
-    "✨ Implementuj funkciu",
-    "🧹 Refaktoruj a pridaj testy",
-    "📄 Dodrž AGENTS.md špecifikáciu"
+    "🛠️ Fix bug / stack trace",
+    "✨ Implement feature",
+    "🧹 Refactor and add tests",
+    "📄 Follow AGENTS.md specification"
   ]
 };
 
@@ -111,15 +111,15 @@ async function apiFetch(endpoint, apiKey, options = {}) {
       errorDetail = await response.text();
     }
     if (response.status === 401 || response.status === 403) {
-      throw new Error(`Neplatný alebo chýbajúci API kľúč (Chyba ${response.status}).`);
+      throw new Error(`Invalid or missing API key (Error ${response.status}).`);
     }
-    throw new Error(`API chyba ${response.status}: ${errorDetail || response.statusText}`);
+    throw new Error(`API error ${response.status}: ${errorDetail || response.statusText}`);
   }
   return response.json();
 }
 
 export async function fetchSources(apiKey) {
-  if (!apiKey) throw new Error('API kľúč nie je nastavený.');
+  if (!apiKey) throw new Error('API key is not set.');
   let allSources = [];
   let pageToken = null;
   do {
@@ -137,7 +137,7 @@ export async function fetchSources(apiKey) {
 }
 
 export async function createSession(apiKey, { prompt, title, source, branch, requirePlanApproval, autoCreatePr }) {
-  if (!apiKey) throw new Error('API kľúč nie je nastavený.');
+  if (!apiKey) throw new Error('API key is not set.');
 
   const body = {
     prompt,
@@ -160,14 +160,14 @@ export async function createSession(apiKey, { prompt, title, source, branch, req
 }
 
 export async function getSession(apiKey, sessionName) {
-  if (!apiKey) throw new Error('API kľúč nie je nastavený.');
+  if (!apiKey) throw new Error('API key is not set.');
   // sessionName usually looks like "sessions/<id>"
   const endpoint = sessionName.startsWith('/') ? sessionName : `/${sessionName}`;
   return apiFetch(endpoint, apiKey);
 }
 
 export async function approvePlan(apiKey, sessionName) {
-  if (!apiKey) throw new Error('API kľúč nie je nastavený.');
+  if (!apiKey) throw new Error('API key is not set.');
   const endpoint = sessionName.startsWith('/') ? `${sessionName}:approvePlan` : `/${sessionName}:approvePlan`;
   return apiFetch(endpoint, apiKey, {
     method: 'POST',

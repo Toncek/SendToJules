@@ -18,14 +18,14 @@ async function buildContextMenu() {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
       id: "jules-root",
-      title: "Poslať do Jules",
+      title: "Send to Jules",
       contexts: ["selection"]
     });
 
     chrome.contextMenus.create({
       id: "jules-open-dialog",
       parentId: "jules-root",
-      title: "Otvoriť editor a vybrať repozitár...",
+      title: "Open Editor & Select Repository...",
       contexts: ["selection"]
     });
 
@@ -42,7 +42,7 @@ async function buildContextMenu() {
           chrome.contextMenus.create({
             id: `jules-quick-${index}`,
             parentId: "jules-root",
-            title: `⚡ Rýchlo poslať do: ${repo.replace('sources/github/', '')}`,
+            title: `⚡ Quick Send to: ${repo.replace('sources/github/', '')}`,
             contexts: ["selection"]
           });
         });
@@ -100,7 +100,7 @@ async function handleAction(tab, quickRepo = null) {
       const settings = await getSettings();
       const payload = {
         prompt: data.text,
-        title: `Úloha z: ${data.title.substring(0, 30)}...`,
+        title: `Task from: ${data.title.substring(0, 30)}...`,
         source: quickRepo,
         branch: data.detectedBranch || settings.defaultBranch,
         requirePlanApproval: settings.requirePlanApproval,
@@ -114,13 +114,13 @@ async function handleAction(tab, quickRepo = null) {
           type: 'basic',
           iconUrl: 'icon.png', // Assuming there's an icon or just fallback to default behavior if missing
           title: 'Jules',
-          message: 'Session vytvorená, sledujem jej stav.'
+          message: 'Session created, monitoring status.'
         });
       } catch (err) {
         chrome.notifications.create({
           type: 'basic',
           iconUrl: 'icon.png',
-          title: 'Chyba (Jules)',
+          title: 'Error (Jules)',
           message: err.message
         });
       }
@@ -204,15 +204,15 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
             chrome.notifications.create(freshSession.name, {
               type: 'basic',
               iconUrl: 'icon.png', // Fallback if missing
-              title: 'Jules čaká na schválenie plánu',
-              message: freshSession.title || 'Kliknite pre zobrazenie detailov.'
+              title: 'Jules is awaiting plan approval',
+              message: freshSession.title || 'Click to view details.'
             });
           } else if (freshSession.state === 'COMPLETED' || freshSession.state === 'FAILED') {
             chrome.notifications.create(freshSession.name, {
               type: 'basic',
               iconUrl: 'icon.png',
-              title: `Jules Session ${freshSession.state === 'COMPLETED' ? 'dokončená' : 'zlyhala'}`,
-              message: freshSession.title || 'Kliknite pre zobrazenie detailov.'
+              title: `Jules Session ${freshSession.state === 'COMPLETED' ? 'completed' : 'failed'}`,
+              message: freshSession.title || 'Click to view details.'
             });
           }
           sessions[i] = freshSession;
