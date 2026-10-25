@@ -2,55 +2,60 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8">
-  <title>Send to Jules - Nastavenia</title>
+  <title>Jules Command Center - Nastavenia</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    /* Additional styles for options page if needed */
-    .container {
-      margin-top: 20px;
-    }
-  </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header-row">
-      <h1>Nastavenia</h1>
-    </div>
+<body class="options-page">
+  <h1>Nastavenia</h1>
 
-    <div class="form-group">
-      <label for="apiKey">Jules API Kľúč (X-Goog-Api-Key)</label>
-      <div class="input-group">
-        <input type="password" id="apiKey" placeholder="Zadajte váš API kľúč">
-        <button type="button" class="input-group-btn" id="toggleApiKey" title="Zobraziť/Skryť" tabindex="-1">
-          👁
-        </button>
-      </div>
+  <div class="form-group mb-2">
+    <label for="apiKey">Jules API Kľúč (X-Goog-Api-Key)</label>
+    <div style="position: relative; display: flex;">
+      <input type="password" id="apiKey" placeholder="Zadajte váš API kľúč" style="padding-right: 40px;">
+      <button type="button" id="btnToggleKey" style="position: absolute; right: 0; top: 0; bottom: 0; background: none; border: none; color: var(--text-color); cursor: pointer; padding: 0 10px;">👁</button>
     </div>
-
-    <div class="form-group">
-      <label for="defaultBranch">Predvolená vetva (Default branch)</label>
-      <input type="text" id="defaultBranch" placeholder="napr. main" value="main">
-    </div>
-
-    <div class="checkbox-group">
-      <input type="checkbox" id="requirePlanApproval" checked>
-      <label for="requirePlanApproval">Vyžadovať schválenie plánu (requirePlanApproval)</label>
-    </div>
-
-    <div class="checkbox-group">
-      <input type="checkbox" id="autoCreatePr">
-      <label for="autoCreatePr">Automaticky vytvoriť Pull Request (AUTO_CREATE_PR)</label>
-    </div>
-
-    <div class="row" style="margin-top: 20px;">
-      <button class="btn btn-primary" id="saveBtn">Uložiť nastavenia</button>
-      <button class="btn" id="testBtn">Otestovať kľúč a načítať repozitáre</button>
-    </div>
-
-    <div id="statusMessage" class="status"></div>
   </div>
 
-  <script src="api.js"></script>
-  <script src="options.js"></script>
+  <div class="form-group mb-2">
+    <label for="defaultBranch">Predvolená vetva (Default branch)</label>
+    <input type="text" id="defaultBranch" placeholder="napr. main">
+  </div>
+
+  <div class="checkbox-group mb-2 mt-2">
+    <input type="checkbox" id="chkRequireApproval">
+    <label for="chkRequireApproval">Vždy vyžadovať schválenie plánu v novom okne (requirePlanApproval)</label>
+  </div>
+
+  <div class="checkbox-group mb-2">
+    <input type="checkbox" id="chkAutoPr">
+    <label for="chkAutoPr">Automaticky vytvoriť Pull Request (AUTO_CREATE_PR)</label>
+  </div>
+
+  <div class="checkbox-group mb-2">
+    <input type="checkbox" id="chkNotifications">
+    <label for="chkNotifications">Povoliť notifikácie na ploche o stave sessions</label>
+  </div>
+
+  <h3 class="mt-2">Vlastné šablóny (Custom Prompt Presets)</h3>
+  <div class="form-group mb-2">
+    <div class="flex-row">
+      <input type="text" id="newPresetInput" placeholder="Nová šablóna..." style="flex: 1;">
+      <button id="btnAddPreset" class="btn">Pridať</button>
+    </div>
+  </div>
+  <div id="presetList" class="session-list mb-2">
+    <!-- Rendered via JS -->
+  </div>
+
+  <div id="statusMessage" class="toast"></div>
+
+  <div class="flex-row mt-2" style="margin-top: 24px;">
+    <button id="btnSave" class="btn btn-primary">Uložiť nastavenia</button>
+    <button id="btnTest" class="btn">Otestovať pripojenie a synchronizovať repozitáre</button>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script type="module" src="options.js"></script>
 </body>
 </html>

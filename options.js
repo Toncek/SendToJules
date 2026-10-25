@@ -1,86 +1,130 @@
+import { getSettings, saveSettings, fetchSources, setCachedSources } from './api.js';
+
+let customPresets = [];
+
 document.addEventListener('DOMContentLoaded', async () => {
   const elements = {
     apiKey: document.getElementById('apiKey'),
-    toggleApiKey: document.getElementById('toggleApiKey'),
+    toggleApiKey: document.getElementById('btnToggleKey'),
     defaultBranch: document.getElementById('defaultBranch'),
-    requirePlanApproval: document.getElementById('requirePlanApproval'),
-    autoCreatePr: document.getElementById('autoCreatePr'),
-    saveBtn: document.getElementById('saveBtn'),
-    testBtn: document.getElementById('testBtn'),
-    statusMessage: document.getElementById('statusMessage')
+    requireApproval: document.getElementById('chkRequireApproval'),
+    autoPr: document.getElementById('chkAutoPr'),
+    notifications: document.getElementById('chkNotifications'),
+    newPresetInput: document.getElementById('newPresetInput'),
+    btnAddPreset: document.getElementById('btnAddPreset'),
+    presetList: document.getElementById('presetList'),
+    saveBtn: document.getElementById('btnSave'),
+    testBtn: document.getElementById('btnTest')
   };
 
   // Load current settings
-  const settings = await window.api.getSettings();
+  const settings = await getSettings();
   elements.apiKey.value = settings.julesApiKey || '';
   elements.defaultBranch.value = settings.defaultBranch || 'main';
-  elements.requirePlanApproval.checked = settings.requirePlanApproval !== false; // Default true
-  elements.autoCreatePr.checked = settings.autoCreatePr === true;
+  elements.requireApproval.checked = settings.requirePlanApproval;
+  elements.autoPr.checked = settings.autoCreatePr;
+  elements.notifications.checked = settings.enableNotifications;
+  customPresets = settings.customPresets || [];
+
+  renderPresets();
 
   // Toggle API key visibility
   elements.toggleApiKey.addEventListener('click', () => {
     if (elements.apiKey.type === 'password') {
       elements.apiKey.type = 'text';
-      elements.toggleApiKey.textContent = '🙈'; // Eye with slash roughly
+      elements.toggleApiKey.textContent = '🙈';
     } else {
       elements.apiKey.type = 'password';
       elements.toggleApiKey.textContent = '👁';
     }
   });
 
-  // Helper to show status message
-  function showStatus(message, isError = false) {
-    elements.statusMessage.textContent = message;
-    elements.statusMessage.className = `status ${isError ? 'error' : 'success'}`;
+  // Manage Presets
+  function renderPresets() {
+    elements.presetList.innerHTML = '';
+    customPresets.forEach((preset, index) => {
+      const row = document.createElement('div');
+      row.className = 'session-item flex-row justify-between';
+      row.style.padding = '8px 12px';
+
+      const txt = document.createElement('span');
+      txt.textContent = preset;
+
+      const btnDel = document.createElement('button');
+      btnDel.className = 'btn';
+      btnDel.textContent = 'Odstrániť';
+      btnDel.onclick = () => {
+        customPresets.splice(index, 1);
+        renderPresets();
+      };
+
+      row.appendChild(txt);
+      row.appendChild(btnDel);
+      elements.presetList.appendChild(row);
+    });
   }
 
-  // Save settings
-  elements.saveBtn.addEventListener('click', async () => {
-    const newSettings = {
-      ...settings, // Preserve fields like lastSelectedRepo
-      julesApiKey: elements.apiKey.value.trim(),
-      defaultBranch: elements.defaultBranch.value.trim() || 'main',
-      requirePlanApproval: elements.requirePlanApproval.checked,
-      autoCreatePr: elements.autoCreatePr.checked
-    };
-
-    await window.api.saveSettings(newSettings);
-    showStatus('Nastavenia boli úspešne uložené.');
-
-    setTimeout(() => {
-      elements.statusMessage.style.display = 'none';
-    }, 3000);
+  elements.btnAddPreset.addEventListener('click', () => {
+    const val = elements.newPresetInput.value.trim();
+    if (val && !customPresets.includes(val)) {
+      customPresets.push(val);
+      elements.newPresetInput.value = '';
+      renderPresets();
+    }
   });
 
-  // Test API Key and fetch sources
+  elements.newPresetInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') elements.btnAddPreset.click();
+  });
+
+  // Save Settings
+  elements.saveBtn.addEventListener('click', async () => {
+    const newSettings = {
+      ...settings,
+      julesApiKey: elements.apiKey.value.trim(),
+      defaultBranch: elements.defaultBranch.value.trim() || 'main',
+      requirePlanApproval: elements.requireApproval.checked,
+      autoCreatePr: elements.autoPr.checked,
+      enableNotifications: elements.notifications.checked,
+      customPresets: customPresets
+    };
+
+    await saveSettings(newSettings);
+    showToast('Nastavenia boli úspešne uložené.', false);
+  });
+
+  // Test Connection
   elements.testBtn.addEventListener('click', async () => {
     const apiKey = elements.apiKey.value.trim();
     if (!apiKey) {
-      showStatus('Zadajte API kľúč pred testovaním.', true);
+      showToast('Zadajte API kľúč pred testovaním.', true);
       return;
     }
 
     elements.testBtn.disabled = true;
-    elements.testBtn.textContent = 'Načítavam...';
-    elements.statusMessage.style.display = 'none';
+    elements.testBtn.textContent = 'Načítavam repozitáre...';
 
     try {
-      // Temporarily save API key for the test if it's not saved yet, but we'll use it directly
-      const sources = await window.api.fetchSources(apiKey);
-
-      // Save valid key immediately to settings to avoid double typing
-      const currentSettings = await window.api.getSettings();
-      await window.api.saveSettings({ ...currentSettings, julesApiKey: apiKey });
-
-      // Cache the sources
-      await window.api.setCachedSources(sources);
-
-      showStatus(`Úspešne pripojené. Nájdených repozitárov: ${sources.length}`);
+      const sources = await fetchSources(apiKey);
+      await saveSettings({ ...settings, julesApiKey: apiKey });
+      showToast(`Pripojenie úspešné. Nájdených repozitárov: ${sources.length}`, false);
     } catch (error) {
-      showStatus(error.message, true);
+      showToast(error.message, true);
     } finally {
       elements.testBtn.disabled = false;
-      elements.testBtn.textContent = 'Otestovať kľúč a načítať repozitáre';
+      elements.testBtn.textContent = 'Otestovať pripojenie a synchronizovať repozitáre';
     }
   });
+
+  function showToast(msg, isError) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast show ${isError ? 'error' : 'success'}`;
+    toast.textContent = msg;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
 });

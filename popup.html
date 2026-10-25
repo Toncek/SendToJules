@@ -2,132 +2,96 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8">
-  <title>Poslať do Jules</title>
+  <title>Jules Command Center</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    /* Popup specific styles */
-    body {
-      width: 450px;
-      min-height: 500px;
-      margin: 0;
-      overflow-x: hidden;
-    }
-
-    #apiKeyWarning, #successView, #mainForm {
-      display: none;
-    }
-
-    /* Repo Selector */
-    .repo-selector {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    /* Loading overlay for repos */
-    #repoLoading {
-      display: none;
-      font-size: 12px;
-      color: var(--primary-color);
-      margin-top: 2px;
-    }
-
-    /* Success View */
-    .success-container {
-      text-align: center;
-      padding: 30px 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .success-icon {
-      font-size: 48px;
-      color: var(--primary-color);
-    }
-
-    .filter-input {
-      margin-bottom: 4px;
-    }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header-row">
-      <h2>Poslať do Jules</h2>
-    </div>
 
-    <div id="statusMessage" class="status"></div>
-
-    <!-- View: Missing API Key Warning -->
-    <div id="apiKeyWarning">
-      <p>Pre používanie rozšírenia je potrebné nastaviť Jules API kľúč.</p>
-      <button class="btn btn-primary" id="openSettingsBtn">Otvoriť nastavenia</button>
-    </div>
-
-    <!-- View: Main Form -->
-    <div id="mainForm">
-      <div class="form-group repo-selector">
-        <label for="repoSelect">Cieľový repozitár</label>
-        <input type="text" id="repoFilter" class="filter-input" placeholder="Hľadať repozitár...">
-        <div class="row">
-          <select id="repoSelect">
-            <option value="">-- Vyberte repozitár --</option>
-          </select>
-          <button type="button" class="btn btn-icon" id="refreshReposBtn" title="Obnoviť repozitáre">↻</button>
-        </div>
-        <div id="repoLoading">Načítavam repozitáre...</div>
-      </div>
-
-      <div class="form-group">
-        <label for="promptText">Zadanie (Prompt)</label>
-        <textarea id="promptText" placeholder="Zadajte inštrukcie pre Jules..."></textarea>
-      </div>
-
-      <div class="checkbox-group">
-        <input type="checkbox" id="appendUrl" checked>
-        <label for="appendUrl">Priložiť URL zdrojovej stránky</label>
-      </div>
-
-      <div class="form-group">
-        <label for="overrideBranch">Cieľová vetva (voliteľné)</label>
-        <input type="text" id="overrideBranch" placeholder="Zdedené z nastavení...">
-      </div>
-
-      <div class="checkbox-group">
-        <input type="checkbox" id="overrideRequireApproval">
-        <label for="overrideRequireApproval">Vyžadovať schválenie plánu</label>
-      </div>
-
-      <div class="checkbox-group">
-        <input type="checkbox" id="overrideAutoPr">
-        <label for="overrideAutoPr">Automaticky vytvoriť PR</label>
-      </div>
-
-      <button class="btn btn-primary" id="submitBtn" style="margin-top: 8px; width: 100%;">
-        Vytvoriť session v Jules
-      </button>
-    </div>
-
-    <!-- View: Success state -->
-    <div id="successView" class="success-container">
-      <div class="success-icon">✓</div>
-      <h3>Session bola úspešne vytvorená!</h3>
-      <p id="sessionLinkText" style="word-break: break-all; font-size: 12px; color: #aaa;"></p>
-
-      <div class="checkbox-group" style="justify-content: center;">
-        <input type="checkbox" id="autoOpen" checked>
-        <label for="autoOpen">Otvoriť automaticky po vytvorení</label>
-      </div>
-
-      <button class="btn btn-primary" id="openSessionBtn">Otvoriť v Jules</button>
-      <button class="btn" id="closeBtn">Zavrieť</button>
-    </div>
-
+  <div class="tabs">
+    <button class="tab-btn active" data-target="tab-new-task">Nová úloha</button>
+    <button class="tab-btn" data-target="tab-sessions">Aktívne Sessions</button>
   </div>
 
-  <script src="api.js"></script>
-  <script src="popup.js"></script>
+  <!-- Tab 1: New Task -->
+  <div id="tab-new-task" class="tab-content active">
+
+    <!-- Smart Repo Selector -->
+    <div class="form-group">
+      <label for="repoSearch">Repozitár <span id="repoDetectedBadge" class="badge badge-success hidden">Detegované z GitHub URL</span></label>
+      <div class="flex-row">
+        <input type="text" id="repoSearch" placeholder="Hľadať alebo vybrať repozitár..." list="repoDatalist" autocomplete="off">
+        <button id="btnOptions" class="btn" title="Nastavenia">⚙</button>
+      </div>
+      <datalist id="repoDatalist"></datalist>
+      <div id="quickSelectContainer" class="chip-container mt-2">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Prompt Area -->
+    <div class="form-group mb-2">
+      <label>Šablóny inštrukcií (Presets)</label>
+      <div id="presetContainer" class="chip-container">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="promptText">Zadanie (Prompt)</label>
+      <textarea id="promptText" placeholder="Zadajte inštrukcie pre Jules... (Ctrl+Enter pre odoslanie)"></textarea>
+    </div>
+
+    <div class="form-group mt-2">
+      <div class="checkbox-group">
+        <input type="checkbox" id="chkAppendUrl">
+        <label for="chkAppendUrl">Priložiť URL zdrojovej stránky</label>
+      </div>
+    </div>
+
+    <div class="flex-row mt-2">
+      <div class="form-group" style="flex: 1;">
+        <label for="inputBranch">Vetva (Branch)</label>
+        <input type="text" id="inputBranch" placeholder="napr. main">
+      </div>
+    </div>
+
+    <div class="flex-row mt-2">
+      <div class="checkbox-group" style="flex: 1;">
+        <input type="checkbox" id="chkRequireApproval">
+        <label for="chkRequireApproval">Vyžadovať schválenie plánu</label>
+      </div>
+      <div class="checkbox-group" style="flex: 1;">
+        <input type="checkbox" id="chkAutoPr">
+        <label for="chkAutoPr">Automaticky PR</label>
+      </div>
+    </div>
+
+    <!-- Status Output -->
+    <div id="statusMessage" class="toast"></div>
+
+    <div class="mt-2" style="margin-top: auto;">
+      <button id="btnSubmit" class="btn btn-primary" style="width: 100%;">
+        Vytvoriť Session (Ctrl+Enter)
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab 2: Sessions Monitor -->
+  <div id="tab-sessions" class="tab-content">
+    <div class="flex-row justify-between mb-2">
+      <h2>Sledované úlohy</h2>
+      <button id="btnRefreshSessions" class="btn">↻ Obnoviť</button>
+    </div>
+
+    <div id="sessionsList" class="session-list">
+      <!-- Injected via JS -->
+      <div class="text-center" style="color: var(--text-muted);">Žiadne aktívne sessions.</div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script type="module" src="popup.js"></script>
 </body>
 </html>
