@@ -1,5 +1,15 @@
-# SendToJules
-Brave & Chrome addon to send selected text to Jules.
+# Jules Command Center
+
+Pokročilé, zero-build Chrome & Brave rozšírenie (Manifest V3) na integráciu pracovných postupov v prehliadači s Google Jules REST API.
+
+## Funkcie
+* **Odoslanie označeného textu:** Jednoducho odošlite označený text z akejkoľvek webstránky priamo do Jules.
+* **Smart GitHub detekcia:** Automaticky deteguje GitHub repozitáre z URL adresy.
+* **Zachovanie formátovania:** Označený kód v `<pre>` alebo `<code>` tagu je zabalený do Markdown syntaxe.
+* **Rýchle skratky:** Z kontextového menu môžete na 1 klik odoslať kód do jedného z vašich posledných repozitárov.
+* **Sledovanie relácií:** Monitorujte aktívne sessions a schvaľujte plány priamo z rozšírenia.
+* **Notifikácie:** Upozornenia na ploche o zmene stavu session.
+* **Klávesová skratka:** Rýchlo odošlite text stlačením `Alt+Shift+J`.
 
 ## Inštalácia
 
@@ -8,17 +18,14 @@ Brave & Chrome addon to send selected text to Jules.
    - **Chrome**: Prejdite na `chrome://extensions`
    - **Brave**: Prejdite na `brave://extensions`
 3. Zapnite "Vývojársky režim" (Developer mode) v pravom hornom rohu.
-4. Kliknite na "Načítať rozbalené" (Load unpacked) a vyberte zložku tohto repozitára.
+4. Kliknite na "Načítať rozbalené" (Load unpacked) a vyberte zložku s naklonovaným projektom.
 
-## Nastavenie API kľúča
-
-1. Kliknite na ikonu rozšírenia alebo naň kliknite pravým tlačidlom a zvoľte "Možnosti" (Options).
-2. Zadajte váš Jules API kľúč, ktorý si môžete vygenerovať v konzole alebo v administrácii pre Jules API.
-3. Nastavte si predvolenú vetvu a ďalšie preferencie a kliknite na "Uložiť nastavenia".
-4. Kliknite na "Otestovať kľúč a načítať repozitáre", aby sa overila funkčnosť a načítal sa zoznam repozitárov.
+## Nastavenie
+1. Kliknite pravým tlačidlom na ikonu rozšírenia a zvoľte **"Možnosti"** (Options).
+2. Zadajte váš Jules API kľúč a kliknite na "Otestovať pripojenie a synchronizovať repozitáre".
+3. Môžete si prispôsobiť predvolenú vetvu a vlastné šablóny (prompt presets).
 
 ## Použitie
-
-- Označte akýkoľvek text na webovej stránke.
-- Kliknite pravým tlačidlom myši a vyberte možnosť **"Poslať do Jules"**.
-- Otvorí sa dialóg, kde si vyberiete cieľový repozitár, môžete upraviť text (prompt) a následne vytvoríte reláciu kliknutím na "Vytvoriť session v Jules".
+* Označte text na akejkoľvek stránke a stlačte `Alt+Shift+J` (alebo použite kontextové menu "Poslať do Jules").
+* Otvorí sa okno s možnosťou úpravy textu, výberu repozitára a rýchlymi akciami pomocou šablón.
+* Sledujte stav vytvorených úloh v záložke "Aktívne Sessions".
