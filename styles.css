@@ -1,0 +1,205 @@
+:root {
+  --bg-color: #1a1a1a;
+  --panel-bg: #242424;
+  --text-color: #e0e0e0;
+  --border-color: #333;
+  --primary-color: #4CAF50;
+  --primary-hover: #45a049;
+  --danger-color: #f44336;
+  --secondary-bg: #333;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 16px;
+  font-size: 14px;
+}
+
+/* Base styles suitable for 450x550 popup */
+.container {
+  max-width: 450px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+h1, h2, h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Form Elements */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+label {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+input[type="text"],
+input[type="password"],
+select,
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-family: var(--font-family);
+  font-size: 14px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Checkboxes */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.checkbox-group label {
+  cursor: pointer;
+  margin: 0;
+}
+
+/* Buttons */
+.btn {
+  background-color: var(--secondary-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn:hover {
+  background-color: #444;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-hover);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Status messages / badges */
+.status {
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+  font-size: 13px;
+  display: none;
+}
+
+.status.success {
+  display: block;
+  background-color: rgba(76, 175, 80, 0.1);
+  border: 1px solid var(--primary-color);
+  color: #81c784;
+}
+
+.status.error {
+  display: block;
+  background-color: rgba(244, 67, 54, 0.1);
+  border: 1px solid var(--danger-color);
+  color: #e57373;
+}
+
+/* Flex utilities */
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.row > * {
+  flex: 1;
+}
+
+.row > .btn-icon {
+  flex: 0 0 auto;
+}
+
+.btn-icon {
+  padding: 8px;
+}
+
+/* Header with action */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.header-row h1 {
+  margin: 0;
+}
+
+/* Input group (e.g. password with show/hide) */
+.input-group {
+  position: relative;
+  display: flex;
+}
+.input-group input {
+  padding-right: 40px;
+}
+.input-group-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 0 10px;
+  font-size: 16px;
+}

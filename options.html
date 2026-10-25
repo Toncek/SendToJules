@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <title>Send to Jules - Nastavenia</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Additional styles for options page if needed */
+    .container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-row">
+      <h1>Nastavenia</h1>
+    </div>
+
+    <div class="form-group">
+      <label for="apiKey">Jules API Kľúč (X-Goog-Api-Key)</label>
+      <div class="input-group">
+        <input type="password" id="apiKey" placeholder="Zadajte váš API kľúč">
+        <button type="button" class="input-group-btn" id="toggleApiKey" title="Zobraziť/Skryť" tabindex="-1">
+          👁
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="defaultBranch">Predvolená vetva (Default branch)</label>
+      <input type="text" id="defaultBranch" placeholder="napr. main" value="main">
+    </div>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="requirePlanApproval" checked>
+      <label for="requirePlanApproval">Vyžadovať schválenie plánu (requirePlanApproval)</label>
+    </div>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="autoCreatePr">
+      <label for="autoCreatePr">Automaticky vytvoriť Pull Request (AUTO_CREATE_PR)</label>
+    </div>
+
+    <div class="row" style="margin-top: 20px;">
+      <button class="btn btn-primary" id="saveBtn">Uložiť nastavenia</button>
+      <button class="btn" id="testBtn">Otestovať kľúč a načítať repozitáre</button>
+    </div>
+
+    <div id="statusMessage" class="status"></div>
+  </div>
+
+  <script src="api.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
