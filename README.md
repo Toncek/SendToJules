@@ -1,31 +1,39 @@
-# Jules Command Center
+# Send to Jules — AI Coding Assistant Launcher
 
-Pokročilé, zero-build Chrome & Brave rozšírenie (Manifest V3) na integráciu pracovných postupov v prehliadači s Google Jules REST API.
+An advanced, zero-build Chrome & Brave extension (Manifest V3) for integrating browser workflows with the Google Jules REST API.
 
-## Funkcie
-* **Odoslanie označeného textu:** Jednoducho odošlite označený text z akejkoľvek webstránky priamo do Jules.
-* **Smart GitHub detekcia:** Automaticky deteguje GitHub repozitáre z URL adresy.
-* **Zachovanie formátovania:** Označený kód v `<pre>` alebo `<code>` tagu je zabalený do Markdown syntaxe.
-* **Rýchle skratky:** Z kontextového menu môžete na 1 klik odoslať kód do jedného z vašich posledných repozitárov.
-* **Sledovanie relácií:** Monitorujte aktívne sessions a schvaľujte plány priamo z rozšírenia.
-* **Notifikácie:** Upozornenia na ploche o zmene stavu session.
-* **Klávesová skratka:** Rýchlo odošlite text stlačením `Alt+Shift+J`.
+## Features
+* **Send Selected Text:** Easily send highlighted text from any webpage directly to Jules.
+* **Smart GitHub Detection:** Automatically detects GitHub repositories from the URL.
+* **Formatting Preservation:** Highlighted code inside `<pre>` or `<code>` tags is automatically wrapped in Markdown syntax.
+* **Quick Shortcuts:** Send code to one of your recent repositories with a single click from the context menu.
+* **Session Tracking:** Monitor active sessions and approve plans directly from the extension.
+* **Notifications:** Desktop alerts for session status changes (e.g., plan approval needed, session completed).
+* **Keyboard Shortcut:** Quickly send text by pressing `Alt+Shift+J`.
 
-## Inštalácia
+## Installation
 
-1. Stiahnite alebo naklonujte tento repozitár.
-2. Otvorte prehliadač:
-   - **Chrome**: Prejdite na `chrome://extensions`
-   - **Brave**: Prejdite na `brave://extensions`
-3. Zapnite "Vývojársky režim" (Developer mode) v pravom hornom rohu.
-4. Kliknite na "Načítať rozbalené" (Load unpacked) a vyberte zložku s naklonovaným projektom.
+### From Chrome Web Store
+*(Link coming soon)*
 
-## Nastavenie
-1. Kliknite pravým tlačidlom na ikonu rozšírenia a zvoľte **"Možnosti"** (Options).
-2. Zadajte váš Jules API kľúč a kliknite na "Otestovať pripojenie a synchronizovať repozitáre".
-3. Môžete si prispôsobiť predvolenú vetvu a vlastné šablóny (prompt presets).
+### Manual Installation (Load Unpacked)
+1. Download or clone this repository.
+2. Open your browser:
+   - **Chrome**: Go to `chrome://extensions`
+   - **Brave**: Go to `brave://extensions`
+3. Enable "Developer mode" in the top right corner.
+4. Click "Load unpacked" and select the folder containing the cloned project.
 
-## Použitie
-* Označte text na akejkoľvek stránke a stlačte `Alt+Shift+J` (alebo použite kontextové menu "Poslať do Jules").
-* Otvorí sa okno s možnosťou úpravy textu, výberu repozitára a rýchlymi akciami pomocou šablón.
-* Sledujte stav vytvorených úloh v záložke "Aktívne Sessions".
+## Setup
+1. Click the extension icon to open it, or right-click the extension icon and select **"Options"** (Settings).
+2. Enter your Jules API Key (`X-Goog-Api-Key`).
+3. Click "Test Connection & Sync Repositories" to verify and load your repositories.
+4. Customize your default branch and create custom prompt presets as needed.
+
+## Usage
+* Highlight text on any page and press `Alt+Shift+J` (or use the "Send to Jules" context menu).
+* A popup will open allowing you to edit the text, select a repository, and use preset prompts.
+* Track the status of your tasks in the "Active Sessions" tab.
+
+## Privacy
+Please read our [Privacy Policy](PRIVACY_POLICY.md) for details on how this extension handles your data.
